@@ -1,0 +1,77 @@
+---------------------------------------------------
+lab1_b_assignment:=
+B) Consider the following database that maintain 
+   information about employees &Departments.
+
+Employee(empid:int,ename:string,age:int,salary:int,#deptno:int)
+
+Department(deptno:int,dname:string,#manager-id:int)
+
+Create the above tables by properly specifying the primary keys
+ &foreign keys.
+
+i. Enter at least 5 tuples for each relation.
+
+ii. Display emp-id & emp name whose salary lies 
+    between10,000 and 50,000.
+iii. List emp name &salary for all the employee
+    working for CS Dept.
+iv. Display emp name & dept name for all the manager
+
+Write PL/SQL program to insert a new row (INSERT INTO command)
+--------------------------------------------------
+create table employee(empid int primary key, 
+ename varchar(20),
+age int,
+salary int,
+deptno int);
+
+create table deparment(
+deptno int primary key,
+dname varchar(20),
+manager_id int,
+foreign key(manager_id) references employee(empid));
+
+alter table employee add foreign key(deptno)
+ references deparment(deptno);
+-----------------------------------------------------
+
+insert into deparment(deptno,dname) values
+(1,'CS'),(2,'IS'),(3,'AI'),(4,'EC'),(5,'SC');
+
+insert into employee(empid,ename,age,salary,deptno) values
+(101,'varun',23,10000,1),
+(102,'varsha',22,20000,1),
+(103,'aradya',23,20000,1),
+(104,'kaveri',24,30000,4),
+(105,'yuva',25,20000,5);
+
+update deparment set manager_id =101 where deptno=1;
+update deparment set manager_id =101 where deptno=2;
+update deparment set manager_id =103 where deptno=3;
+update deparment set manager_id =104 where deptno=4;
+update deparment set manager_id =105 where deptno=5;
+
+select empid,ename, salary from employee where 
+salary between 10000 and 20000;
+
+select e.ename,e.salary from employee e ,deparment d
+where d.dname='CS' and d.deptno=e.deptno;
+
+select e.ename, d.dname from employee e,deparment d
+ where e.empid=d.manager_id;
+
+--------------------------------------------------=
+
+
+d.Write PL/SQL procedure to insert a new row(INSERT INTO command).
+mysql> delimiter $$
+mysql> create procedure PDepartment()
+    -> begin
+    -> insert into Department(Dept_id,Name,manager_id)values(6,'HR',102);
+    -> end$$
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter ;
+mysql> call PDepartment();
+
