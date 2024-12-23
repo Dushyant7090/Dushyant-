@@ -1,0 +1,756 @@
+lab Assignment 5:
+
+5. Consider the following database of student enrolment in courses and 
+
+books adopted each course.
+
+STUDENT(regno: string, name:string, major: string, bdate: date)
+
+COURSE (courseno: int, cname: string, dept: string)
+
+ENROLL (#regno: string, courseno#:int, sem: int marks:int)
+
+TEXT(book-ISBN: int,book-title: string, publisher: string, author:string)
+
+BOOK_ADOPTION(courseno#:int, sem:int, book-ISBN#:int)
+
+Create the above tables by properly specifying the primary keys and the 
+
+foreign Keys
+
+Enter at least five tuples for each relation.
+
+Write SQL queries to
+
+i. Demonstrate how you add a textbook to the database and make this book 
+
+be adapted by some department.
+
+ii. Produce list of textbooks (include Course#, Book-ISBN, Book-title) in 
+
+the alphabetical order for courses offered by the CS department that use 
+
+more than two books.
+
+iii. List any department that has its adopted books published by a 
+
+specific publisher.
+
+Write PL/SQL program to demonstrate user defined exception handling.
+
+*****************************************************************
+
+Create:
+
+mysql> CREATE DATABASE books_lab5;
+
+Query OK, 1 row affected (0.01 sec)
+
+mysql> USE books_lab5;
+
+Database changed
+
+STUDENT(regno: string, name:string, major: string, bdate: date)
+
+mysql> CREATE TABLE student(
+
+ regno VARCHAR(15),
+
+ name VARCHAR(20),
+
+ major VARCHAR(20),
+
+ bdate DATE,
+
+ constraint pks PRIMARY KEY (regno) )engine=innodb;
+
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> DESC student;
+
++-------+-------------+------+-----+---------+-------+
+
+| Field | Type | Null | Key | Default | Extra |
+
++-------+-------------+------+-----+---------+-------+
+
+| regno | varchar(15) | NO | PRI | | |
+
+| name | varchar(20) | YES | | NULL | |
+
+| major | varchar(20) | YES | | NULL | |
+
+| bdate | date | YES | | NULL | |
+
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+-------------------------------------------------------------------------
+
+COURSE (courseno: int, cname: string, dept: string)
+
+mysql> CREATE TABLE course(
+
+ courseno INT,
+
+ cname VARCHAR(20),
+
+ dept VARCHAR(20),
+
+ constraint pkc PRIMARY KEY (courseno) )engine=innodb;
+
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> DESC course;
+
++----------+-------------+------+-----+---------+-------+
+
+| Field | Type | Null | Key | Default | Extra |
+
++----------+-------------+------+-----+---------+-------+
+
+| courseno | int(11) | NO | PRI | 0 | |
+
+| cname | varchar(20) | YES | | NULL | |
+
+| dept | varchar(20) | YES | | NULL | |
+
++----------+-------------+------+-----+---------+-------+
+
+3 rows in set (0.00 sec)
+
+----------------------------------------------------------------------
+
+ENROLL (#regno: string, courseno#:int, sem: int marks:int)
+
+mysql> CREATE TABLE enroll(
+
+ regno VARCHAR(15),
+
+ courseno INT,
+
+ sem INT(3),
+
+ marks INT(4), constraint pk22 PRIMARY KEY (regno,courseno),
+
+ constraint fkes FOREIGN KEY (regno) REFERENCES student (regno),
+
+ constraint fkec FOREIGN KEY (courseno) REFERENCES course (courseno) 
+
+) engine=innodb;
+
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> DESC enroll;
+
++----------+-------------+------+-----+---------+-------+
+
+| Field | Type | Null | Key | Default | Extra |
+
++----------+-------------+------+-----+---------+-------+
+
+| regno | varchar(15) | NO | PRI | | |
+
+| courseno | int(11) | NO | PRI | 0 | |
+
+| sem | int(3) | YES | | NULL | |
+
+| marks | int(4) | YES | | NULL | |
+
++----------+-------------+------+-----+---------+-------+
+
+4 rows in set (0.00 sec)
+
+-------------------------------------------------------------------------
+
+TEXT(book-ISBN: int,book-title: string, publisher: string, author:string)
+
+mysql> CREATE TABLE text(
+
+ book_isbn INT(5),
+
+ book_title VARCHAR(20),
+
+ publisher VARCHAR(20),
+
+ author VARCHAR(20),
+
+ constraint pkt PRIMARY KEY (book_isbn) )engine=innodb;
+
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> DESC text;
+
++------------+-------------+------+-----+---------+-------+
+
+| Field | Type | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+
+| book_isbn | int(5) | NO | PRI | 0 | |
+
+| book_title | varchar(20) | YES | | NULL | |
+
+| publisher | varchar(20) | YES | | NULL | |
+
+| author | varchar(20) | YES | | NULL | |
+
++------------+-------------+------+-----+---------+-------+
+
+4 rows in set (0.00 sec)
+
+---------------------------------------------------------------------
+
+BOOK_ADOPTION(courseno#:int, sem:int, book-ISBN#:int)
+
+mysql> CREATE TABLE book_adoption(
+
+ courseno INT,
+
+ sem INT(3),
+
+ book_isbn INT(5),
+
+constraint pk12 PRIMARY KEY (courseno,book_isbn),
+
+ constraint fkba1 FOREIGN KEY (courseno) REFERENCES course 
+
+(courseno),
+
+ constraint fkba2 FOREIGN KEY (book_isbn) REFERENCES 
+
+text(book_isbn))engine=innodb;
+
+Query OK, 0 rows affected (0.17 sec)
+
+mysql> DESC book_adoption;
+
++-----------+---------+------+-----+---------+-------+
+
+| Field | Type | Null | Key | Default | Extra |
+
++-----------+---------+------+-----+---------+-------+
+
+| courseno | int(11) | NO | PRI | 0 | |
+
+| sem | int(3) | YES | | NULL | |
+
+| book_isbn | int(5) | NO | PRI | 0 | |
+
++-----------+---------+------+-----+---------+-------+
+
+3 rows in set (0.00 sec)
+
+-------------------- ------------------- ----------------------------
+
+Insertion:
+
+mysql> INSERT INTO student (regno,name,major,bdate) VALUES 
+
+ ('cs001','Ramu',''Comp Science',1993-12-30),
+
+ ('cs002','barath','Maths','1993-09-24'),
+
+ ('cs003','chandhan','Physics','1993-11-27'),
+
+ ('cs004','darshan','Physics','1993-04-13'),
+
+ ('cs005','veeresh','Botony','1994-08-24');
+
+Query OK, 4 rows affected (0.07 sec)
+
+Records: 4 Duplicates: 0 Warnings: 0
+
+mysql> SELECT * FROM student;
+
+mysql> select * from student;
+
++-------+----------+-------+------------+
+
+| regno | name | major | bdate |
+
++-------+----------+-------+------------+
+
+| cs001 | Ramu |'Comp Science'|,1993-12-30|
+
+| cs002 | barath | maths | 1993-09-24 |
+
+| cs003 | chandhan | physics | 1993-11-27 |
+
+| cs004 | darshan | Physics | 1993-04-13 |
+
+| cs005 | veeresh | Botony 
+
+| 1994-08-24 |
+
++-------+----------+-------+------------+
+
+5 rows in set (0.00 sec)
+
+==================================================================
+mysql> INSERT INTO course VALUES (111,'OS','CSE'),
+
+ (112,'EC','CSE'),
+
+ (113,'SS','ISE'),
+
+ (114,'DBMS','CSE'),
+
+ (115,'SIGNALS','ECE');
+
+Query OK, 5 rows affected (0.06 sec)
+
+Records: 5 Duplicates: 0 Warnings: 0
+
+mysql> SELECT * FROM course;
+
++----------+---------+------+
+
+| courseno | cname | dept |
+
++----------+---------+------+
+
+| 111 | OS | CSE |
+
+| 112 | EC | CSE |
+
+| 113 | SS | ISE |
+
+| 114 | DBMS | CSE |
+
+| 115 | SIGNALS | ECE |
+
++----------+---------+------+
+
+5 rows in set (0.00 sec)
+
+=========================================================================
+
+======
+
+mysql> INSERT INTO text (book_isbn,book_title,publisher,author)values
+
+ (10,'DATABASE SYSTEMS','PEARSON','SCHIELD'),
+
+ (900,'OPERATING SYS','PEARSON','LELAND'),
+
+ (901,'CIRCUITS','HALL INDIA','BOB'),
+
+ (902,'SYSTEM SOFTWARE','PETERSON','JACOB'),
+
+ (903,'SCHEDULING','PEARSON','PATIL'),
+
+ (904,'DATABASE SYSTEMS','PEARSON','JACOB'),
+
+ (905,'DATABASE MANAGER','PEARSON','BOB'),
+
+ (906,'SIGNALS','HALL INDIA','SUMIT');
+
+Query OK, 8 rows affected (0.06 sec)
+
+Records: 8 Duplicates: 0 Warnings: 0
+
+mysql> SELECT * FROM text;
+
++-----------+------------------+------------+-------------+
+
+| book_isbn | book_title | publisher | author |
+
++-----------+------------------+------------+-------------+
+
+| 10 | DATABASE SYSTEMS | PEARSON | SCHIELD |
+
+| 900 | OPERATING SYS | PEARSON | LELAND |
+
+| 901 | CIRCUITS | HALL INDIA | BOB |
+
+| 902 | SYSTEM SOFTWARE | PETERSON | JACOB |
+
+| 903 | SCHEDULING | PEARSON | PATIL |
+
+| 904 | DATABASE SYSTEMS | PEARSON | JACOB |
+
+| 905 | DATABASE MANAGER | PEARSON | BOB |
+
+| 906 | SIGNALS | HALL INDIA | SUMIT 
+
++-----------+------------------+------------+---------+
+
+8 rows in set (0.00 sec)
+
+---------------- -------------------------------------
+
+mysql> INSERT INTO enroll (regno,courseno,sem,marks) VALUES 
+
+ ('cs001',115,3,100),
+
+ ('cs002',114,5,100),
+
+ ('cs003',113,5,100),
+
+ ('cs004',111,5,100),
+
+ ('cs005',112,3,100);
+
+Query OK, 5 rows affected (0.08 sec)
+Records: 5 Duplicates: 0 Warnings: 0
+
+mysql> SELECT * FROM enroll;
+
++------------+----------+------+-------+
+
+| regno | courseno | sem | marks |
+
++------------+----------+------+-------+
+
+| cs001 | 115 | 3 | 100 |
+
+| cs002 | 114 | 5 | 100 |
+
+| cs003 | 113 | 5 | 100 |
+
+| cs004 | 111 | 5 | 100 |
+
+| cs005 | 112 | 3 | 100 |
+
++------------+----------+------+-------+
+
+5 rows in set (0.00 sec)
+
+=========================================================================
+
+======
+
+mysql> INSERT INTO book_adoption (courseno,sem,book_isbn) VALUES
+
+(111,5,900),
+
+(111,5,903),
+
+(111,5,904),
+
+(112,3,901),
+
+(113,3,10),
+
+(114,5,905),
+
+(115,3,906);
+
+Query OK, 7 rows affected (0.06 sec)
+
+Records: 7 Duplicates: 0 Warnings: 0
+
+mysql> SELECT * FROM book_adoption;
+
++----------+------+-----------+
+
+| courseno | sem | book_isbn |
+
++----------+------+-----------+
+
+| 111 | 5 | 900 |
+
+| 111 | 5 | 903 |
+
+| 111 | 5 | 904 |
+
+| 112 | 3 | 901 |
+
+| 113 | 3 | 10 |
+
+| 114 | 5 | 905 |
+
+| 115 | 3 | 906 |
+
+| 
+
++----------+------+-----------+
+
+7 rows in set (0.00 sec)
+
+************************************************************************
+
+Queries:
+
+i. Demonstrate how you add a textbook to the database and make this book 
+
+be adapted by some department.
+
+table data status before executing query 1: 
+
+mysql> SELECT * FROM book_adoption;
+
++----------+------+-----------+
+
+| courseno | sem | book_isbn |
+
++----------+------+-----------+
+
+| 111 | 5 | 900 |
+
+| 111 | 5 | 903 |
+
+| 111 | 5 | 904 |
+
+| 112 | 3 | 901 |
+
+| 113 | 3 | 10 |
+
+| 114 | 5 | 905 |
+ 115 | 3 | 906 |
+
++----------+------+-----------+
+
+7 rows in set (0.00 sec)
+
+SOLUTION TO QUERY1
+
+mysql> INSERT INTO text 
+
+(book_isbn,book_title,publisher,author)values
+
+ (907,'COA','PEARSON','MORRIS MANO');
+
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO book_adoption (courseno,sem,book_isbn) VALUES
+
+ (111,5,907);
+
+Query OK, 1 row affected (0.02 sec)
+
+table data status After executing query 1: 
+
+OUTPUT OF QUERY 1:
+
+mysql> SELECT * FROM text;
+
++-----------+------------------+------------+-------------+
+
+| book_isbn | book_title | publisher | author |
+
++-----------+------------------+------------+-------------+
+
+| 10 | DATABASE SYSTEMS | PEARSON | SCHIELD |
+
+| 900 | OPERATING SYS | PEARSON | LELAND |
+
+| 901 | CIRCUITS | HALL INDIA | BOB |
+
+| 902 | SYSTEM SOFTWARE | PETERSON | JACOB |
+
+| 903 | SCHEDULING | PEARSON | PATIL |
+
+| 904 | DATABASE SYSTEMS | PEARSON | JACOB |
+
+| 905 | DATABASE MANAGER | PEARSON | BOB |
+
+| 906 | SIGNALS | HALL INDIA | SUMIT |
+
+| 907 | COA | PEARSON | MORRIS MANO |
+
++-----------+------------------+------------+-------------+
+
+9 rows in set (0.00 sec)
+
+mysql> SELECT * FROM book_adoption;
+
++----------+------+-----------+
+
+| courseno | sem | book_isbn |
+
++----------+------+-----------+
+
+| 111 | 5 | 900 |
+
+| 111 | 5 | 903 |
+
+| 111 | 5 | 904 |
+
+| 112 | 3 | 901 |
+
+| 113 | 3 | 10 |
+
+| 114 | 5 | 905 |
+
+| 115 | 3 | 906 |
+
+| 111 | 5 | 907 |
+
++----------+------+-----------+
+
+8 rows in set (0.00 sec)
+
+mysql> select * from book_adoption;
+
++----------+------+-----------+
+
+| courseno | sem | book_isbn |
+
+*********** ********* *******************************
+ii. Produce a list of text books (include Course #, Book-ISBN, Booktitle) in the alphabetical order for courses offered by the 'CS' 
+
+department that use more than two books.
+
+mysql> SELECT c.courseno,t.book_isbn,t.book_title
+
+ -> FROM course c,book_adoption ba,text t
+
+ -> WHERE c.courseno=ba.courseno
+
+ -> AND ba.book_isbn=t.book_isbn
+
+ -> AND c.dept='CSE'
+
+ -> AND 2<( SELECT COUNT(book_isbn)
+
+ -> FROM book_adoption b
+
+ -> WHERE c.courseno=b.courseno)
+
+ -> ORDER BY t.book_title;
+
++----------+-----------+------------------+
+
+| courseno | book_isbn | book_title |
+
++----------+-----------+------------------+
+
+| 111 | 907 | COA |
+
+| 111 | 904 | DATABASE SYSTEMS |
+
+| 111 | 900 | OPERATING SYS |
+
+| 111 | 903 | SCHEDULING |
+
++----------+-----------+------------------+
+
+4 rows in set (0.00 sec)
+
+***********************************************************************
+
+iii. List any department that has all its adopted books published by a 
+
+specific publisher.
+
+mysql> SELECT DISTINCT c.dept
+
+ FROM course c,book_adoption b,text t
+
+ WHERE c.courseno=b.courseno
+
+ AND t.book_isbn=b.book_isbn
+
+ AND t.publisher='PEARSON'
+
+ AND c.dept NOT IN(SELECT c.dept
+
+ FROM course c,book_adoption b,text t
+
+ WHERE c.courseno=b.courseno
+
+ AND t.book_isbn=b.book_isbn
+
+ AND t.publisher !='PEARSON');
+
++------+
+
+| dept |
+
++------+
+
+| ISE |
+
++------+
+
+ 
+
+*************************************************************************
+
+d. Write PL/SQL procedure to demonstrate user defined exception handling.
+
+mysql> use books_lab6;
+
+Database changed
+
+mysql> delimiter $$
+
+mysql> create procedure User_defined_Exception3()
+
+ -> BEGIN
+
+ -> declare Exit handler for 1054
+
+ -> BEGIN
+
+ -> select "Got an error: an unknown column" As Message;
+
+ -> End;
+-> update student set name='Bhavana' where Regn='cs006';
+
+ -> End$$
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter ;
+
+mysql> call user_defined_exception3();
+
++--------------+-------------------
+
+| Message |
+
++--------------+------------------
+
+| Got an error: an unknown column |
+
++--------------+--------------------
+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+*************************************************************************
+
+mysql> use books_lab5;
+
+Database changed
+
+mysql> DELIMITER $$
+
+mysql> CREATE PROCEDURE TestProc()
+
+ -> BEGIN
+
+ -> DECLARE TableNotFound CONDITION for 1146 ;
+
+ -> DECLARE EXIT HANDLER FOR TableNotFound
+
+ -> SELECT 'Please create table abc first' Message;
+
+ -> SELECT * FROM abc;
+
+ -> END$$
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+
+mysql> DELIMITER ;
+
+mysql> call TestProc11();
+
++-------------------------------+
+
+| Message |
+
++-------------------------------+
+
+| Please create table abc first |
+
++-------------------------------+
+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.02 sec)
