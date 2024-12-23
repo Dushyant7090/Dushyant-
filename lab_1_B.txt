@@ -39,12 +39,8 @@ alter table employee add foreign key(deptno)
 insert into deparment(deptno,dname) values
 (1,'CS'),(2,'IS'),(3,'AI'),(4,'EC'),(5,'SC');
 
-insert into employee(empid,ename,age,salary,deptno) values
-(101,'varun',23,10000,1),
-(102,'varsha',22,20000,1),
-(103,'aradya',23,20000,1),
-(104,'kaveri',24,30000,4),
-(105,'yuva',25,20000,5);
+insert into employee(empid,ename,age,salary,deptno) values (101,'varun',23,10000,1),(102,'varsha',22,20000,1),(103,'aradya',23,20000,1),(104,'kaveri',24,30000,4),(105,'yuva',25,20000,5);
+
 
 update deparment set manager_id =101 where deptno=1;
 update deparment set manager_id =101 where deptno=2;
@@ -65,12 +61,11 @@ select e.ename, d.dname from employee e,deparment d
 
 
 d.Write PL/SQL procedure to insert a new row(INSERT INTO command).
-mysql> delimiter $$
-mysql> create procedure PDepartment()
-    -> begin
-    -> insert into Department(Dept_id,Name,manager_id)values(6,'HR',102);
-    -> end$$
-Query OK, 0 rows affected (0.00 sec)
+ delimiter $$
+ create procedure PDepartment()
+ begin
+ insert into Department(Dept_id,Name,manager_id)values(6,'HR',102);
+ end$$
 
 mysql> delimiter ;
 mysql> call PDepartment();
