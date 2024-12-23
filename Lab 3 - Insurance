@@ -21,19 +21,14 @@ Enter at least five tables for each relation.
 Write SQL queries to
 
 i. Demonstrate how you 
-
  a. Update the damage amount for the car with a specific Reg. no in the accident with 
-
- report number 12 to 25000.
-
- b. Add a new accident to the database. 
+report number 12 to 25000.
+b. Add a new accident to the database. 
 
 ii. Find the total number of people who owned cars that were involved in accident sin 
-
 2002. 
 
 iii. Find the total number of accidents in which cars belonging to a specific model were 
-
 involved.
 
 Write PL/SQL program demonstrate exception handling for the above query 
@@ -99,372 +94,53 @@ regno varchar(10),
 report_no varchar(10),
 
 damage_amt decimal(8,2),
-
 CONSTRAINT FKd foreign key(driverid) references person(driverid) on delete cascade, 
-
 CONSTRAINT FKc1 foreign key(regno) references car(regno) on delete cascade,
 CONSTRAINT FKa foreign key(report_no) references accident(report_no) on delete 
-
 cascade) engine = innodb;
 
------------------------------------------------------------------------------------
 
-mysql> desc person;
 
-+----------+-------------+------+-----+---------+-------+
 
-| Field | Type | Null | Key | Default | Extra |
-
-+----------+-------------+------+-----+---------+-------+
-
-| driverid | varchar(10) | NO | PRI | | |
-
-| name | varchar(20) | NO | | NULL | |
-
-| address | varchar(20) | NO | | NULL | |
-
-+----------+-------------+------+-----+---------+-------+
-
-3 rows in set (0.00 sec)
-
-mysql> desc car;
-
-+-------+-------------+------+-----+---------+-------+
-
-| Field | Type | Null | Key | Default | Extra |
-
-+-------+-------------+------+-----+---------+-------+
-
-| regno | varchar(10) | NO | PRI | | |
-
-| model | varchar(20) | NO | | NULL | |
-
-| year | varchar(4) | NO | | NULL | |
-
-+-------+-------------+------+-----+---------+-------+
-
-3 rows in set (0.00 sec)
-
-mysql> desc owns;
-
-+----------+-------------+------+-----+---------+-------+
-
-| Field | Type | Null | Key | Default | Extra |
-
-+----------+-------------+------+-----+---------+-------+
-
-| driverid | varchar(10) | YES | MUL | NULL | |
-
-| regno | varchar(10) | YES | MUL | NULL | |
-
-+----------+-------------+------+-----+---------+-------+
-
-2 rows in set (0.00 sec)
-
-mysql> desc accident;
-
-+---------------+-------------+------+-----+---------+-------+
-
-| Field | Type | Null | Key | Default | Extra |
-
-+---------------+-------------+------+-----+---------+-------+
-
-| report_no | varchar(10) | NO | PRI | | |
-
-| accident_date | date | YES | | NULL | |
-
-| location | varchar(30) | NO | | NULL | |
-
-+---------------+-------------+------+-----+---------+-------+
-
-3 rows in set (0.00 sec)
-
-mysql> desc participated;
-
-+------------+--------------+------+-----+---------+-------+
-
-| Field | Type | Null | Key | Default | Extra |
-
-+------------+--------------+------+-----+---------+-------+
-
-| driverid | varchar(10) | YES | MUL | NULL | |
-
-| regno | varchar(10) | YES | MUL | NULL | |
-
-| report_no | varchar(10) | YES | MUL | NULL | |
-
-| damage_amt | decimal(8,2) | YES | | NULL | |
-
-+------------+--------------+------+-----+---------+-------+
-
-4 rows in set (0.00 sec)
-
------------------------------------------------------------------------------------
 
 person table insertion
 
-mysql> insert into person values('1d','sachin','mumbai');
+insert into person values('1d','sachin','mumbai'),('2d','sourav','kolkata'),('3d','saniya','hyderabad'),('4d','sindhu','bengaluru'),('5d','virat','delhi');
 
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into person values('2d','sourav','kolkata');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into person values('3d','saniya','hyderabad');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into person values('4d','sindhu','bengaluru');
-
-Query OK, 1 row affected (0.00 sec)
-mysql> insert into person values('5d','virat','delhi');
-
-Query OK, 1 row affected (0.00 sec)
 
 ----------------------------------------------------------------------------------
 
 car table insertion
 
-mysql> insert into car values('1c','santro','2002');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into car values('2c','swift','2002');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into car values('3c','kia','2020');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into car values('4c','maruti','2008');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into car values('5c','santro','2012');
-
-Query OK, 1 row affected (0.02 sec)
+insert into car values('1c','santro','2002'),('2c','swift','2002'),('3c','kia','2020'),('4c','maruti','2008'),('5c','santro','2012');
 
 ----------------------------------------------------------------------------------
 
 owns table insertion
 
-mysql> insert into owns values('1d','1c');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into owns values('1d','2c');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into owns values('2d','3c');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into owns values('4d','5c');
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into owns values('5d','4c');
-
-Query OK, 1 row affected (0.00 sec)
+insert into owns values('1d','1c'),('1d','2c'),('2d','3c'),('4d','5c'),('5d','4c');
 
 -------------------------------------------------------------------------------------
 
 accident table insertion
 
-mysql> insert into accident values('1r','2002-06-12','dharwad');
-
-Query OK, 1 row affected, 1 warning (0.00 sec)
-
-mysql> insert into accident values('2r','2002-06-12','hubli');
-
-Query OK, 1 row affected, 1 warning (0.00 sec)
-
-mysql> insert into accident values('3r','2009-02-07','hubli');
-
-Query OK, 1 row affected, 1 warning (0.00 sec)
-
-mysql> insert into accident values('4r','2002-12-07','gadag');
-
-Query OK, 1 row affected, 1 warning (0.00 sec)
-
-mysql> insert into accident values('5r','2007-09-09','bengaluru');
-
-Query OK, 1 row affected, 1 warning (0.00 sec)
+insert into accident values('1r','2002-06-12','dharwad'),('2r','2002-06-12','hubli'),('3r','2009-02-07','hubli'),('4r','2002-12-07','gadag'),('5r','2007-09-09','bengaluru');
 
 -----------------------------------------------------------------------------------
 
 participated table insertion
 
-mysql> insert into participated values('1d','1c','1r',10000);
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into participated values('1d','2c','2r',90000);
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into participated values('2d','3c','3r',24000);
-
-Query OK, 1 row affected (0.00 sec)
-
-mysql> insert into participated values('4d','5c','4r',1200);
-
-Query OK, 1 row affected (0.00 sec)
-mysql> insert into participated values('4d','5c','5r',6000);
-
-Query OK, 1 row affected (0.00 sec)
+insert into participated values('1d','1c','1r',10000),('1d','2c','2r',90000),('2d','3c','3r',24000),('4d','5c','4r',1200),('4d','5c','5r',6000);
 
 --------------------------------------------------------------------------------------
 
-mysql> select * from person;
-
-+----------+--------+-----------+
-
-| driverid | name | address |
-
-+----------+--------+-----------+
-
-| 1d | sachin | mumbai |
-
-| 2d | sourav | kolkata |
-
-| 3d | saniya | hyderabad |
-
-| 4d | sindhu | bengaluru |
-
-| 5d | virat | delhi |
-
-+----------+--------+-----------+
-
-5 rows in set (0.00 sec)
-
-mysql> select * from car;
-
-+-------+--------+------+
-
-| regno | model | year |
-
-+-------+--------+------+
-
-| 1c | santro | 2002 |
-
-| 2c | swift | 2002 |
-
-| 3c | kia | 2020 |
-
-| 4c | maruti | 2008 |
-
-| 5c | santro | 2012 |
-
-+-------+--------+------+
-
-5 rows in set (0.00 sec)
-
-mysql> select * from owns;
-
- 
-
-+----------+-------+
-
-| driverid | regno |
-
-+----------+-------+
-
-| 1d | 1c |
-
-| 1d | 2c |
-
-| 2d | 3c |
-
-| 5d | 4c |
-
-| 1d | 1c |
-
-| 1d | 2c |
-
-| 2d | 3c |
-
-| 4d | 5c |
-
-| 5d | 4c |
-
-+----------+-------+
-
-9 rows in set (0.00 sec)
-
-mysql> select * from accident;
-
-+-----------+---------------+-----------+
-
-| report_no | accident_date | location |
-
-+-----------+---------------+-----------+
-
-| 1r | 2002-06-12 | dharwad |
-
-| 2r | 2002-06-12 | hubli |
-
-| 3r | 2009-02-07 | hubli |
-
-| 4r | 2002-12-07 | gadag |
-
-| 5r | 2007-09-09 | bengaluru |
-
-+-----------+---------------+-----------+
-
-5 rows in set (0.00 sec)
-
-mysql> select * from participated;
-
-+----------+-------+-----------+------------+
-
-| driverid | regno | report_no | damage_amt |
-
-+----------+-------+-----------+------------+
-
-| 1d | 1c | 1r | 10000.00 
 iii) Demonstrate how you
-
  a. Update the damage amount for the car with a specific Reg. no in the 
-
 accident with report number 1r to 25000
 
-Query:-
-
-mysql> update participated set damage_amt='25000'
-
- where regno='1c' and report_no='1r';
-
-Query OK, 1 row affected (0.02 sec)
-
-Rows matched: 1 Changed: 1 Warnings: 0
-
-output after applying updated query
+update participated set damage_amt='25000'  where regno='1c' and report_no='1r';
 
 mysql> select * from participated;
-
-+----------+-------+-----------+------------+
-
-| driverid | regno | report_no | damage_amt |
-
-+----------+-------+-----------+------------+
-
-| 1d | 1c | 1r | 25000.00 |
-
-| 1d | 2c | 2r | 90000.00 |
-
-| 2d | 3c | 3r | 24000.00 |
-
-| 4d | 5c | 4r | 1200.00 |
-
-| 4d | 5c | 5r | 6000.00 |
-
-+----------+-------+-----------+------------+
-
-5 rows in set (0.00 sec)
 
 --------------------------------------------------------------------------------
 
@@ -472,59 +148,18 @@ b)
 
 Add a new accident to the database
 
-mysql> insert into accident values('6r','2002-09-02','hubli');
-
-Query OK, 1 row affected, 1 warning (0.00 sec)
+mysql>insert into accident values('6r','2002-09-02','hubli');
 
 mysql> insert into participated values('5d','4c','6r',9000);
 
-Query OK, 1 row affected (0.00 sec)
-
-output after applying insertion query(shown in red color)
 
 mysql> select * from accident;
 
-+-----------+---------------+-----------+
 
-| report_no | accident_date | location |
-
-+-----------+---------------+-----------+
-
-| 1r | 2002-06-12 | dharwad |
-
-| 2r | 2002-06-12 | hubli |
-
-| 3r | 2009-02-07 | hubli |
-
-| 4r | 2002-12-07 | gadag |
-
-| 5r | 2007-09-09 | bengaluru |
-
-| 6r | 2002-09-02 | hubli |
-
-+-----------+---------------+-----------+
-
-6 rows in set (0.00 sec)
 
 mysql> select * from participated;
 
-+----------+-------+-----------+------------+
 
-| driverid | regno | report_no | damage_amt |
-
-+----------+-------+-----------+------------+
-
-| 1d | 1c | 1r | 25000.00 |
-
-| 1d | 2c | 2r | 90000.00 |
-
-| 2d | 3c | 3r | 24000.00 |
-
-| 4d | 5c | 4r | 1200.00 |
-
-| 4d | 5c | 5r | 6000.00 |
-
-| 5d | 4c | 6r | 9000.00 |
 iv)
 
 Find the total number of people who owned cars that were involved in accidents in 2002.
@@ -537,135 +172,39 @@ participated pa where a.report_no = pa.report_no and p.driverid=pa.driverid and 
 
 '2002%';
 
-output of the query:-
-
-+-------------------+
-
-| Tot_No_of_People |
-
-+-------------------+
-
-| 3 |
-
-+-------------------+
-
-1 row in set, 1 warning (0.00 sec)
-
 -----------------------------------------------------------------------------------
 
 v)
 
 Find the number of accidents in which cars belonging to a specific model 
-
 were involved.
 
 Query:
 
 mysql> select count(report_no) as "Number of ACCIDENTS " from car c,participated p 
-
 where c.regno=p.regno and c.model='santro';
 
-output of the query:-
-
-+--------------------+
-
-| No of ACCIDENTS |
-
-+--------------------+
-
-| 3 |
-
-+--------------------+
-
-1 row in set (0.00 sec)
 
 ----------------------------******end*************-------------------------
 
-Do not write this pl/sql
 
-(II) Write PL/SQL program demonstrate exception handling for the above query 
+ Write PL/SQL program demonstrate exception handling for the above query 
 
 (I)
 
-mysql> delimiter //
-
-mysql> create procedure Participated_update()
-
+ delimiter //
+ create procedure Participated_update()
  BEGIN
-
  declare exit handler for 1054
-
  BEGIN
-
  select 'GOT AN UPDATE ERROR' AS Message;
-
  END;
-
- update participated set Damageam=20000 where Regno='C502';
-
+ update participated set Damageam=20000 where Reno='C502';
  END//
 
-Query OK, 0 rows affected (0.00 sec)
 
 mysql> delimiter ;
 
 mysql> call Participated_update();
 
-+---------------------+
-
-| Message |
-
-+---------------------+
-
-| GOT AN UPDATE ERROR |
-
-+---------------------+
-
-1 row in set (0.08 sec)
-
-Query OK, 0 rows affected (0.00 sec)
-
 -----------------------------------------------------------------------------------------
-
-(II)
-
-mysql> delimiter $$
-
-mysql> create procedure Procedure_Person()
-BEGIN
-
- declare exit handler for 1054
-
- BEGIN
-
- select 'GOT AN ERROR WHILE DISPLAYING THE DATA' AS Message;
-
- END;
-
- select name,Address,Damageamt from Person p,Participated pa, Accident a where
-
- p.Driver_id=pa.Driver_id and a.Reportno= pa.Reportno ;
-
- END$$
-
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> delimiter ;
-
-mysql> call Procedure_Person();
-
-+----------------------------------------+
-
-| Message |
-
-+----------------------------------------+
-
-| GOT AN ERROR WHILE DISPLAYING THE DATA |
-
-+----------------------------------------+
-
-1 row in set (0.00 sec)
-
-Query OK, 0 rows affected (0.01 sec)
-
-***************************************************************************************
