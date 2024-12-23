@@ -26,274 +26,41 @@ Write PL/SQL program illustrates how to create and call a function.
 a. Create the above tables by properly specifying the primary key.
 
 mysql> create database lab6_Book_dealer;
-Query OK, 1 row affected (0.36 sec)
+
 
 mysql> use lab6_Book_dealer;
 Database changed
 
-mysql> create table Author(
-    -> Authorid int,
-    -> Name varchar(20),
-    -> City varchar(20),
-    -> Country varchar(20),
-    -> constraint PKA primary key(Authorid))engine=innodb;
-Query OK, 0 rows affected (1.00 sec)
-
-mysql> desc Author;
-+----------+-------------+------+-----+---------+-------+
-| Field    | Type        | Null | Key | Default | Extra |
-+----------+-------------+------+-----+---------+-------+
-| Authorid | int(11)     | NO   | PRI | 0       |       |
-| Name     | varchar(20) | YES  |     | NULL    |       |
-| City     | varchar(20) | YES  |     | NULL    |       |
-| Country  | varchar(20) | YES  |     | NULL    |       |
-+----------+-------------+------+-----+---------+-------+
-4 rows in set (0.28 sec)
-
-PUBLISHER (Publisherid:int, Name:String, City:String, Country:String )
-
-mysql> create table Publisher(
-    -> Publisherid int,
-    -> Name varchar(20),
-    -> City varchar(20),
-    -> Country varchar(20),
-    -> constraint PKP primary key(Publisherid))engine=innodb;
-Query OK, 0 rows affected (0.80 sec)
-
-mysql> desc Publisher;
-+-------------+-------------+------+-----+---------+-------+
-| Field       | Type        | Null | Key | Default | Extra |
-+-------------+-------------+------+-----+---------+-------+
-| Publisherid | int(11)     | NO   | PRI | 0       |       |
-| Name        | varchar(20) | YES  |     | NULL    |       |
-| City         | varchar(20) | YES  |     | NULL    |       |
-| Country     | varchar(20) | YES  |     | NULL    |       |
-+-------------+-------------+------+-----+---------+-------+
-4 rows in set (0.14 sec)
-
-CATEGORY (Categoryid: int, Description:String )
+create table Author(Authorid int, Name varchar(20), City varchar(20),Country varchar(20), constraint PKA primary key(Authorid))engine=innodb;
 
 
-mysql> create table Category(
-    -> Categoryid int,
-    -> Description varchar(20),
-    -> constraint PKCAT primary key(Categoryid))engine=innodb;
-Query OK, 0 rows affected (0.45 sec)
+ create table Publisher( Publisherid int, Name varchar(20), City varchar(20), Country varchar(20), constraint PKP primary key(Publisherid))engine=innodb;
 
-mysql> desc Category;
-+-------------+-------------+------+-----+---------+-------+
-| Field       | Type        | Null | Key | Default | Extra |
-+-------------+-------------+------+-----+---------+-------+
-| Categoryid  | int(11)     | NO   | PRI | 0       |       |
-| Description | varchar(20) | YES  |     | NULL    |       |
-+-------------+-------------+------+-----+---------+-------+
-2 rows in set (0.08 sec)
+create table Category( Categoryid int, Description varchar(20), constraint PKCAT primary key(Categoryid))engine=innodb;
+
+create table Catalog(Bookid int,Title varchar(20), Authorid int, Publisherid int, Categoryid int, Year int, Price int, constraint PKB primary key(Bookid),
+constraint FKA foreign key(Authorid) references Author(Authorid), constraint FKP foreign key(Publisherid) references Publisher(Publisherid),
+constraint FKC foreign key(Categoryid) references Category(Categoryid))engine=innodb;
 
 
-
-CATALOG (Bookid:int, Title:String, Authorid int, Publisherid:int,
-Categoryid: int,Year:int, Price:int )
-
-mysql> create table Catalog(
-    -> Bookid int,
-    -> Title varchar(20),
-    -> Authorid int,
-    -> Publisherid int,
-    -> Categoryid int,
-    -> Year int,
-    -> Price int,
-    -> constraint PKB primary key(Bookid),
-
-    -> constraint FKA foreign key(Authorid) references Author(Authorid),
-    -> constraint FKP foreign key(Publisherid) references Publisher(Publisherid),
-    -> constraint FKC foreign key(Categoryid) references Category(Categoryid))engine=innodb;
-
-
-
-Query OK, 0 rows affected (0.84 sec)
-
-mysql> desc Catalog;
-+-------------+-------------+------+-----+---------+-------+
-| Field       | Type        | Null | Key | Default | Extra |
-+-------------+-------------+------+-----+---------+-------+
-| Bookid      | int(11)     | NO   | PRI | 0       |       |
-| Title       | varchar(20) | YES  |     | NULL    |       |
-| Authorid    | int(11)     | YES  | MUL | NULL    |       |
-| Publisherid | int(11)     | YES  | MUL | NULL    |       |
-| Categoryid  | int(11)     | YES  | MUL | NULL    |       |
-| Year        | int(11)     | YES  |     | NULL    |       |
-| Price       | int(11)     | YES  |     | NULL    |       |
-+-------------+-------------+------+-----+---------+-------+
-7 rows in set (0.17 sec)
-
-ORDERDETAIL (Oredrno:int, Bookid:int, Quantity:int )
-
-mysql> create table Orderdetail(
-    -> Orderno int,
-    -> Bookid int,
-    -> Quantity int,
-    -> constraint PKORD primary key(Orderno),
-    -> constraint FKBOOK foreign key(Bookid) references Catalog(Bookid))engine=innodb;
-
-
-Query OK, 0 rows affected (1.06 sec)
-
-mysql> desc Orderdetail;
-+----------+---------+------+-----+---------+-------+
-| Field    | Type    | Null | Key | Default | Extra |
-+----------+---------+------+-----+---------+-------+
-| Orderno  | int(11) | NO   | PRI |
-
-- 0       |       |
-| Bookid   | int(11) | YES  | MUL | NULL    |       |
-| Quantity | int(11) | YES  |     | NULL    |       |
-+----------+---------+------+-----+---------+-------+
-3 rows in set (0.12 sec)
+ create table Orderdetail( Orderno int, Bookid int, Quantity int, constraint PKORD primary key(Orderno), constraint FKBOOK foreign key(Bookid) references Catalog(Bookid))engine=innodb;
 
 
 ***********************************************************************************
 b. Enter At least five tuples for each relation.
 
-AUTHOR (Authorid int, Name:String, City:String,Country:String )
 
-mysql> insert into author values(1000,'Nandagopalan','Bangalore','India');
-Query OK, 1 row affected (0.02 sec)
+insert into author values(1000,'Nandagopalan','Bangalore','India'),(2000,'Tony','Haywood','USA'),(3000,'Holzner','New York','USA'),(4000,'Tennenbaum','London','UK'),
+(5000,'Balagurusamy','Chennai','India');
 
-mysql> insert into author values(2000,'Tony','Haywood','USA');
-Query OK, 1 row affected (0.01 sec)
+insert into publisher values(11,'Wiely','New Delhi','India'),(22,'PHI','California','USA'),(33,'Sapna','Bangalore','India'),(44,'TMH','New York','USA'),(55,'Wrox','Texas','USA');
 
-mysql> insert into author values(3000,'Holzner','New York','USA');
-Query OK, 1 row affected (0.05 sec)
+insert into category values(1,'OS'),(2,'Languages'),(3,'Hardware')(4,'Algorithms')(5,'Internet');
 
-mysql> insert into author values(4000,'Tennenbaum','London','UK');
-Query OK, 1 row affected (0.03 sec)
+insert into catalog values(123,'DSC',1000,33,2,2000,185),(456,'Networks',4000,44,4,2002,365),(789,'VB6',2000,11,2,2000,300),(213,'Frontpage',4000,44,5,2003,500),
+(879,'ADA',1000,33,4,2001,195);
 
-mysql> insert into author values(5000,'Balagurusamy','Chennai','India');
-Query OK, 1 row affected (0.03 sec)
-
-mysql> select *from Author;
-+----------+--------------+-----------+---------+
-| Authorid | Name         | City      | Country |
-+----------+--------------+-----------+---------+
-|     1000 | Nandagopalan | Bangalore | India   |
-|     2000 | Tony         | Haywood   | USA     |
-|     3000 | Holzner      | New York  | USA     |
-|     4000 | Tennenbaum   | London    | UK      |
-|     5000 | Balagurusamy | Chennai   | India   |
-+----------+--------------+-----------+---------+
-5 rows in set (0.00 sec)
-
-PUBLISHER (Publisherid:int, Name:String, City:String, Country:String )
-
-
-mysql> insert into publisher values(11,'Wiely','New Delhi','India');
-Query OK, 1 row affected (0.17 sec)
-
-mysql> insert into publisher values(22,'PHI','California','USA');
-Query OK, 1 row affected (0.03 sec)
-
-mysql> insert into publisher values(33,'Sapna','Bangalore','India');
-Query OK, 1 row affected (0.14 sec)
-
-mysql> insert into publisher values(44,'TMH','New York','USA');
-Query OK, 1 row affected (0.14 sec)
-
-mysql> insert into publisher values(55,'Wrox','Texas','USA');
-Query OK, 1 row affected (0.06 sec)
-
-mysql> select *from publisher;
-+-------------+-------+------------+---------+
-| Publisherid | Name  | City        | Country |
-+-------------+-------+------------+---------+
-|          11 | Wiely | New Delhi  | India   |
-|          22 | PHI   | California | USA     |
-|          33 | Sapna | Bangalore  | India   |
-|          44 | TMH   | New York   | USA     |
-|          55 | Wrox  | Texas      | USA     |
-+-------------+-------+------------+---------+
-5 rows in set (0.00 sec)
-
-CATEGORY (Categoryid: int, Description:String )
-mysql> insert into category values(2,'Languages');
-Query OK, 1 row affected (0.02 sec)
-
-mysql> insert into category values(3,'Hardware');
-Query OK, 1 row affected (0.04 sec)
-
-mysql> insert into category values(4,'Algorithms');
-Query OK, 1 row affected (0.04 sec)
-
-mysql> insert into category values(5,'Internet');
-Query OK, 1 row affected (0.16 sec)
-
-mysql> select *from category;
-+------------+-------------+
-| Categoryid | Description |
-+------------+-------------+
-|          1 | OS          |
-|          2 | Languages   |
-|          3 | Hardware    |
-|          4 | Algorithms  |
-|          5 | Internet    |
-+------------+-------------+
-5 rows in set (0.00 sec)
-
-
-CATALOG (Bookid:int, Title:String, Authorid int, Publisherid:int,
-Categoryid: int,Year:int, Price:int )
-
-mysql> insert into catalog values(123,'DSC',1000,33,2,2000,185);
-Query OK, 1 row affected (0.03 sec)
-
-mysql> insert into catalog values(456,'Networks',4000,44,4,2002,365);
-Query OK, 1 row affected (0.03 sec)
-
-mysql> insert into catalog values(789,'VB6',2000,11,2,2000,300);
-Query OK, 1 row affected (0.63 sec)
-
-mysql> insert into catalog values(213,'Frontpage',4000,44,5,2003,500);
-Query OK, 1 row affected (0.03 sec)
-
-mysql> insert into catalog values(879,'ADA',1000,33,4,2001,195);
-Query OK, 1 row affected (0.03 sec)
-
-mysql> select *from Catalog;
-+--------+-----------+----------+-------------+------------+------+-------+
-| Bookid | Title     | Authorid | Publisherid | Categoryid | Year | Price |
-+--------+-----------+----------+-------------+------------+------+-------+
-|    123 | DSC       |     1000 |          33 |          2 | 2000 |   185 |
-|    213 | Frontpage |     4000 |          44 |          5 | 2003 |   500 |
-|    456 | Networks  |     4000 |          44 |          4 | 2002 |   365 |
-|    789 | VB6       |     2000 |          11 |          2 | 2000 |   300 |
-|    879 | ADA       |     1000 |          33 |          4 | 2001 |   195 |
-+--------+-----------+----------+-------------+------------+------+-------+
-5 rows in set (0.00 sec)
-
-ORDERDETAIL (Oredrno:int, Bookid:int, Quantity:int )
-
-mysql> insert into orderdetail values(113,123,20);
-Query OK, 1 row affected (0.03 sec)
-
-mysql> insert into orderdetail values(114,213,50);
-Query OK, 1 row affected (0.33 sec)
-
-mysql> insert into orderdetail values(115,789,500);
-Query OK, 1 row affected (0.03 sec)
-
-mysql> insert into orderdetail values(116,879,8);
-Query OK, 1 row affected (0.11 sec)
-
-mysql> select *from Orderdetail;
-+---------+--------+----------+
-| Orderno | Bookid | Quantity |
-+---------+--------+----------+
-|     112 |    123 |      100 |
-|     113 |    123 |       20 |
-|     114 |    213 |       50 |
-|     115 |    789 |      500 |
-|     116 |    879 |        8 |
-+---------+--------+----------+
-5 rows in set (0.00 sec)
+insert into orderdetail values(112,123,100),(113,123,20),(114,213,50),(115,789,500),(116,879,8);
 
 **************************************************************************************
 c. Execute the following queries (SQL)
@@ -305,92 +72,38 @@ solution to above query:
 mysql> select c.authorid,a.name from catalog c, author a  where a.authorid=c.authorid and c.price>(select avg(price) from catalog)  group by c.authorid,a.name having count(c.authorid)>=2;
 
 
-output of the query:
-+----------+------------+
-| authorid | name    |
-+----------+------------+
-|     4000 | Tennenbaum |
-+----------+------------+
-1 row in set (0.01 sec)  
 -----------------    ----------------- --------------   ------------------------
 2. Demonstrate how to increase the price of the book published by a specific  publisher by 10%.
 
-mysql> select *from Catalog;
-+--------+-----------+----------+-------------+------------+------+-------+
-| Bookid | Title     | Authorid | Publisherid | Categoryid | Year | Price |
-+--------+-----------+----------+-------------+------------+------+-------+
-|    123 | DSC       |     1000 |          33 |          2 | 2000 |   185 |
-|    213 | Frontpage |     4000 |          44 |          5 | 2003 |   500 |
-|    456 | Networks  |     4000 |          44 |          4 | 2002 |   365 |
-|    789 | VB6       |     2000 |          11 |          2 | 2000 |   300 |
-|    879 | ADA       |     1000 |          33 |          4 | 2001 |   195 |
-+--------+-----------+----------+-------------+------------+------+-------+
-5 rows in set (0.00 sec)
------------------------------------------------------------------------------------------
 mysql> Update Publisher p,Catalog c set c.price=c.price+(c.price*0.1) where
     -> c.publisherid=p.publisherid AND p.publisherid=44;
 
-
-Query OK, 2 rows affected (0.05 sec)
-Rows matched: 2  Changed: 2  Warnings: 0
-
-mysql> select *from Catalog;
-+--------+-----------+----------+-------------+------------+------+-------+
-| Bookid | Title     | Authorid | Publisherid | Categoryid | Year | Price |
-+--------+-----------+----------+-------------+------------+------+-------+
-|    123 | DSC       |     1000 |          33 |          2 | 2000 |   185 |
-|    213 | Frontpage |     4000 |          44 |          5 | 2003 |   550 |
-|    456 | Networks  |     4000 |          44 |          4 | 2002 |   402 |
-|    789 | VB6       |     2000 |          11 |          2 | 2000 |   300 |
-|    879 | ADA       |     1000 |          33 |          4 | 2001 |   195 |
-+--------+-----------+----------+-------------+------------+------+-------+
-5 rows in set (0.00 sec)
 -----------------------------------------------------------------------------------
-	2. Display the title of the book having maximum sales.
-
+	
 
 3.  Find the author of the book, which has maximum sales.
 
-       (select authorid from catalog where bookid in(select bookid from orderdetail group by bookid having sum(quantity)in(select sum(quantity) from orderdetail group by bookid order by sum(quantity) desc limit 1)));
-
-
-output of the query:
-+------+
-| name |
-+------+
-| Tony |
-+------+
-1 row in set (0.01 sec)
+ (select authorid from catalog where bookid in(select bookid from orderdetail group by bookid having sum(quantity)in(select sum(quantity) from orderdetail group by bookid order by sum(quantity) desc limit 1)));
 
 
 
 **************************************************************************************
 d. Write PL/SQL procedure to illustrate, how to create and call a function
-AUTHOR(author-id:int, name:string, city:string, country:string)
-mysql>delimiter $$
- create function custid33( authorid int)
+
+           delimiter $$
+         create function custid33( authorid int)
            returns varchar(20)
             Deterministic
             begin
             declare city varchar(20);
            if authorid=3000 then
             set city='newyork';
-update author set city='newyork' where authorid=3000;
+           update author set city='newyork' where authorid=3000;
             end if;
             return (city);
             end$$
-Query OK, 0 rows affected (0.01 sec)
 
 mysql>delimiter ;
 
 mysql> select authorid,name,custid33(authorid) from author;
-+----------+-------------------+
-| authorid | custid1(authorid) |
-+----------+-------------------+
-|     1000 | NULL              |
-|     2000 | NULL              |
-|     3000 | newyork           |
-|     4000 | NULL              |
-|     5000 | NULL              |
-+----------+-------------------+
-5 rows in set (0.00 sec)
+
